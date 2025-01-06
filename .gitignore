@@ -1,0 +1,27 @@
+# dependencies
+node_modules/
+**/node_modules/
+
+# next.js build output
+.next/
+out/
+
+# typescript incremental build cache
+*.tsbuildinfo
+
+# production build
+dist/
+build/
+
+# python virtualenv
+project_venv/
+
+# editor / tooling
+.claude/
+.vscode/
+.idea/
+
+# misc
+.DS_Store
+*.log
+.env*.local
