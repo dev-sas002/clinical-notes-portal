@@ -1,0 +1,29 @@
+# One command, no manual steps:
+#
+#   docker compose up --build
+#
+# The app boots on http://localhost:8170 with seeded, synthetic care notes and
+# two demo accounts shown on the sign-in page. No backend is required.
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: care-notes-frontend:latest
+    ports:
+      - "8170:3000"
+    environment:
+      # "demo" serves the seeded in-memory corpus; "http" proxies the FastAPI
+      # backend at CARE_NOTES_API_URL.
+      CARE_NOTES_DATA_SOURCE: ${CARE_NOTES_DATA_SOURCE:-demo}
+      CARE_NOTES_API_URL: ${CARE_NOTES_API_URL:-http://host.docker.internal:8000}
+      # Replace with a real random value for anything but a local demo.
+      SESSION_SECRET: ${SESSION_SECRET:-local-demo-session-secret-change-me}
+      SESSION_TTL_SECONDS: ${SESSION_TTL_SECONDS:-28800}
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/healthz"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
